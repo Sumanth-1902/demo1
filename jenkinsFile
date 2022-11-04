@@ -1,0 +1,42 @@
+pipeline {
+    agent any 
+        stages {
+            stage (clone) {
+                steps {
+                    git 'https://github.com/Sumanth-1902/demo1.git'
+                }
+            }
+            stage (build) {
+                steps {
+                    sh 'mvn clean install -DskipTest'
+                }
+            }
+            stage (test) {
+                steps {
+                    sh 'mvn test'
+                }
+                post {
+                    always {
+                        junit 'target/surefire-reports/*.xml'
+                        archiveArtifacts 'target/*.jar'
+                    }
+                }
+            }
+            stage (tom) {
+                steps {
+                    sh 'cp target/*.jar /var/opt/tomcat/webapps'
+                }
+            }
+            stage (run) {
+                steps {
+                    sh './var/opt/tomcat/bin/catalina.sh run &'
+                }
+            }
+            stage (apptest) {
+                steps {
+                    sh 'wget http://192.168.75.128:8081/'
+                }
+            }
+        }
+}
+    
