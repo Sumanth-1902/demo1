@@ -29,11 +29,13 @@ pipeline {
             }
             stage (run) {
                 steps {
+                    sh 'sudo su jenkins'
                     sh './var/opt/tomcat/bin/catalina.sh run &'
                 }
             }
             stage (apptest) {
                 steps {
+                    
                     sh 'wget http://192.168.75.128:8081/'
                 }
             }
